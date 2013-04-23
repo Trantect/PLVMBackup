@@ -1,0 +1,3 @@
+gawk
+lzop
+partclone

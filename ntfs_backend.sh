@@ -1,0 +1,14 @@
+#!/bin/bash
+
+LVM_PARTITION=$1
+DST_DIR=$2
+PARTITION_NUM=$3
+
+echo $LVM_PARTITION
+ntfsfix $LVM_PARTITION
+
+#DST_FILE=${DST_DIR}/`echo ${LVM_PARTITION}|gawk -F'/' '{print $4}'`.ntfsclone.lzo
+DST_FILE=${DST_DIR}/p${PARTITION_NUM}.ntfs.lzo
+echo $DST_FILE
+echo "ntfsclone -f -s -o - ${LVM_PARTITION} | lzop -c >${DST_FILE}"
+ntfsclone -f -s -o - ${LVM_PARTITION} | lzop -c >${DST_FILE}
