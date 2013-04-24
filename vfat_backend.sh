@@ -2,13 +2,10 @@
 
 LVM_PARTITION=$1
 DST_DIR=$2
-FSTYPE=ext4
+PARTITION_NUM=$3
 
 # add error handle for no filesystem
 # add error handle for not ext4
-echo $LVM_PARTITION
-fsck.${FSTYPE} -y $LVM_PARTITION
-DST_FILE=${DST_DIR}/`echo ${LVM_PARTITION}|gawk -F'/' '{print $4}'`.pcl.lzo
-echo $DST_FILE
-echo "partclone.${FSTYPE} -c -s ${LVM_PARTITION} | lzop -c >${DST_FILE}"
-partclone.${FSTYPE} -c -s ${LVM_PARTITION} | lzop -c >${DST_FILE}
+fsck.vfat -y "$LVM_PARTITION"
+DST_FILE=${DST_DIR}/p${PARTITION_NUM}.vfat.lzo
+partclone.vfat -c -s ${LVM_PARTITION} | lzop -c >${DST_FILE}
