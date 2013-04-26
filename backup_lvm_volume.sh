@@ -1,45 +1,27 @@
 #!/bin/bash
 
+SNAPSHOT_SIZE=100M
+while getopts "s:" opt
+do
+    case $opt in
+        s ) SNAPSHOT_SIZE=$OPTARG;;
+        ? ) echo "error"
+            exit 1;;
+    esac
+done
+shift $(($OPTIND -1))
+
 RAW_DEV=$1
 DST_DIR=$2
-SNAPSHOT_SIZE=$3
 
 TIMESTAMP=`date +%Y%m%d%H%M`
 LVM_GROUP=`echo ${RAW_DEV}|gawk -F '/' '{print $3}'`
 LVM_VOLUME=`echo ${RAW_DEV}|gawk -F '/' '{print $4}'`
 SNAPSHOT_DEV="/dev/${LVM_GROUP}/${LVM_VOLUME}_${TIMESTAMP}"
 PARTITION_PREFIX="/dev/mapper/${LVM_GROUP}-${LVM_VOLUME}_${TIMESTAMP}p"
-#echo ${PARTITION_PREFIX}
 
-logstep() {
-    local content=$@
-    echo "---${content}"
-}
-logaction() {
-    local content=$@
-    echo "   * ${content}"
-}
-logresult() {
-    local content=$@
-    echo "     ""${content}"
-}
-
-listresult() {
-    local content=$@
-    echo "$content" | (while read l; do
-        logresult "$l"
-    done)
-}
-logerror() {
-    local content=$@
-    echo "     ${content}"
-}
-listerror() {
-    local content=$@
-    echo "$content" | (while read l; do
-        logerror $l
-    done)
-}
+#include log functions
+source log.sh
 
 snapshot() {
     logstep "Parepre for backuping..."
@@ -157,7 +139,7 @@ backupparts() {
 }
 
 snapshot $RAW_DEV $SNAPSHOT_DEV $SNAPSHOT_SIZE
-#backupmeta $SNAPSHOT_DEV $TIMESTAMP $RAW_DEV ${DST_DIR}/meta
-#backupmbr ${SNAPSHOT_DEV} ${DST_DIR}/mbr.lzo
+backupmeta $SNAPSHOT_DEV $TIMESTAMP $RAW_DEV ${DST_DIR}/meta
+backupmbr ${SNAPSHOT_DEV} ${DST_DIR}/mbr.lzo
 backupparts ${PARTITION_PREFIX} ${SNAPSHOT_DEV}
 rmsnapshot $SNAPSHOT_DEV
