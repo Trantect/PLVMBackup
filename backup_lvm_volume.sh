@@ -32,12 +32,11 @@ snapshot() {
     output=$(lvcreate -L${snapshot_size} -s -n ${snapshot_dev} ${raw_dev} 2>&1)
     local result=$?
     case $result in
-        0)
-            listresult "$output"
-            ;;
-        *)  logerror "Failed to create snapshot"
-            listresult "${output}"
-            exit 1
+        0) listresult "$output"
+           ;;
+        *) logerror "Failed to create snapshot"
+           listresult "${output}"
+           exit 1
            ;;
     esac
 }
@@ -88,6 +87,7 @@ getptinfo() {
             exit 0
         fi
     done)
+    exit 1
 }
 
 backupmbr() {
@@ -128,7 +128,7 @@ backupparts() {
         esac
         if [ "$pttype" != extended ]; then
             logaction "Backup partition${pnum} ${pttype} ${fstype}"
-            output=$(./${fstype}_backend.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1 1>/dev/null)
+            output=$(./${fstype}_backup.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1 1>/dev/null)
             listresult "$output"
         fi
         # unmap the snapshot
