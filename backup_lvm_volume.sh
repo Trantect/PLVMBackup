@@ -14,6 +14,24 @@ shift $(($OPTIND -1))
 RAW_DEV=$1
 DST_DIR=$2
 
+if [ -z "$RAW_DEV" ]; then
+    echo Error Parameters
+    exit 1
+fi
+if [ -z "$DST_DIR" ]; then
+    echo Error Parameters
+    exit 1
+fi
+if [ ! -b "$RAW_DEV" ]; then
+    echo $RAW_DEV is not existed.
+    exit 1
+fi
+
+if [ ! -d "$DST_DIR" ]; then
+    echo No such directory: $DST_DIR.
+    exit 1
+fi
+
 TIMESTAMP=`date +%Y%m%d%H%M`
 LVM_GROUP=`echo ${RAW_DEV}|gawk -F '/' '{print $3}'`
 LVM_VOLUME=`echo ${RAW_DEV}|gawk -F '/' '{print $4}'`
@@ -115,7 +133,6 @@ backupparts() {
         local pttype=`echo $ptinfo|gawk '{print $1}'`
         local fstype=`echo $ptinfo|gawk '{print $2}'`
         #add error handle for no filesystem
-        #skip extended partition
         case $fstype in
             fat16)
                 fstype="vfat"
