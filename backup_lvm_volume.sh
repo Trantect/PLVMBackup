@@ -127,8 +127,8 @@ backupparts() {
                 ;;
         esac
         if [ "$pttype" != extended ]; then
-            logaction "Backup partition${pnum} ${pttype} ${fstype}"
-            output=$(./${fstype}_backup.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1 1>/dev/null)
+            logaction "backup partition${pnum} ${pttype} ${fstype}"
+            output=$(./${fstype}_backup.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1)
             listresult "$output"
         fi
         # unmap the snapshot
