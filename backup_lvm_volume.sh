@@ -1,15 +1,24 @@
 #!/bin/bash
 
 SNAPSHOT_SIZE=100M
-while getopts "s:" opt
+TEMP=`getopt -o s: -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+#set -- $(getopt s: "$@")
+while [ $# -gt 0 ]
 do
-    case $opt in
-        s ) SNAPSHOT_SIZE=$OPTARG;;
-        ? ) echo "error"
-            exit 1;;
+    case "$1" in
+        -s ) SNAPSHOT_SIZE="$2"; shift;;
+        -- ) shift; break;;
+        -* ) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+        *  ) break;;
     esac
+    shift
 done
-shift $(($OPTIND -1))
 
 RAW_DEV=$1
 DST_DIR=$2
@@ -111,9 +120,10 @@ getptinfo() {
 backupmbr() {
     local snapshot_dev=$1
     local mbr_file=$2
-    dd if=${snapshot_dev} bs=512 count=2048|lzop -c >${mbr_file}
+    local table_file=$3
+    dd if=${snapshot_dev} bs=512 count=2048 |lzop -c >${mbr_file}
+    sfdisk ${snapshot_dev} -d > ${table_file}
 }
-
 # backup all the partitions
 backupparts() {
     local partition_perfix=$1
@@ -157,6 +167,6 @@ backupparts() {
 
 snapshot $RAW_DEV $SNAPSHOT_DEV $SNAPSHOT_SIZE
 backupmeta $SNAPSHOT_DEV $TIMESTAMP $RAW_DEV ${DST_DIR}/meta
-backupmbr ${SNAPSHOT_DEV} ${DST_DIR}/mbr.lzo
+backupmbr ${SNAPSHOT_DEV} ${DST_DIR}/mbr.lzo ${DST_DIR}/table.sf
 backupparts ${PARTITION_PREFIX} ${SNAPSHOT_DEV}
 rmsnapshot $SNAPSHOT_DEV

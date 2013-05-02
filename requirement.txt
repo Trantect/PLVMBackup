@@ -3,3 +3,4 @@ gawk
 lzop
 partclone
 ntfsclone
+sfdisk
