@@ -1,11 +1,15 @@
 #!/bin/bash
 
 logstep() { local content=$@
-    echo "---${content}"
+    echo ""
+    echo "--- ${content} ---"
+    echo ""
 }
 logaction() {
     local content=$@
-    echo "   * ${content}"
+    echo ""
+    echo "*** ${content} ***"
+    echo ""
 }
 logresult() {
     local content=$@

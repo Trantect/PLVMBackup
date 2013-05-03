@@ -56,13 +56,11 @@ snapshot() {
     local snapshot_dev=$2
     local snapshot_size=$3
     logaction "Create snapshot for current state"
-    output=$(lvcreate -L${snapshot_size} -s -n ${snapshot_dev} ${raw_dev} 2>&1)
+    lvcreate -L${snapshot_size} -s -n ${snapshot_dev} ${raw_dev}
     local result=$?
     case $result in
-        0) listresult "$output"
-           ;;
+        0) ;;
         *) logerror "Failed to create snapshot"
-           listresult "${output}"
            exit 1
            ;;
     esac
@@ -73,8 +71,8 @@ rmsnapshot() {
     local snapshot_dev=$1
     logaction "Remove snapshot"
     sleep 5
-    local output=`lvremove -f ${snapshot_dev}`
-    listresult "$output"
+    lvremove -f ${snapshot_dev}
+    #listresult "$output"
 }
 
 
@@ -132,8 +130,8 @@ backupparts() {
     #echo "kpartx -av ${dev}"
     logstep "Backuping partitions"
     logaction "Map all partitions"
-    local output=`kpartx -av ${dev} || ( echo "kpartx failed" >&2 && exit 1 )`
-    listresult "$output"
+    kpartx -av ${dev} || ( echo "kpartx failed" >&2 && exit 1 )
+    #listresult "$output"
 
     for p in ${partition_perfix}*; do
         #add error handle for no backend file
@@ -155,8 +153,8 @@ backupparts() {
         esac
         if [ "$pttype" != extended ]; then
             logaction "backup partition${pnum} ${pttype} ${fstype}"
-            output=$(./${fstype}_backup.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1)
-            listresult "$output"
+            ./${fstype}_backup.sh "${p}" "${DST_DIR}" "${pnum}" 2>&1
+            #listresult "$output"
         fi
         # unmap the snapshot
     done

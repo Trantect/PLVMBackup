@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 TEMP=`getopt -o l:d:np: -l lvm:,dir:,nodata,part: -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -9,7 +8,6 @@ if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
 
 #set -- $(getopt s: "$@")
-
 
 ACTION="clone"
 while [ $# -gt 0 ]
@@ -29,6 +27,20 @@ done
 LVM_GROUP=$(echo ${LVM_AGRGS}|gawk -F ":" '{print $1}')
 LVM_VOLUME=$(echo ${LVM_AGRGS}|gawk -F ":" '{print $2}')
 
+
+if [ ${LVM_GROUP} == "" ]; then
+    echo "Please provide the lvm group"
+    exit 1
+fi
+if [ ${LVM_VOLUME} == "" ]; then
+    echo "Please provide the lvm volume"
+    exit 1
+fi
+if [ ${BACKUP_IMAGE} == "" ]; then
+    echo "Please provide the backup image"
+    exit 1
+fi
+
 #include log functions
 source log.sh
 
@@ -46,7 +58,9 @@ restorembr() {
     local dev=$1
     local mbr_file=$2
     local table_file=$3
+    #logaction "Restore mbr"
     lzop -dc ${mbr_file}|dd bs=512 count=1 of=${dev}
+    #logaction "Restore partition table"
     sfdisk --force ${dev} < ${table_file}
 }
 
@@ -71,8 +85,6 @@ getptinfo() {
     exit 1
 }
 
-#getptinfo tmp/meta 5|gawk '{print $2}'
-
 #restore one partition to target dev
 restorepartition() {
     local partition_num=$1
@@ -92,25 +104,41 @@ restorepartition() {
 }
 
 restorevolume() {
+    logstep "Create a new volume with same partition"
+    logaction "Create volume"
     createvolume $LVM_GROUP $LVM_VOLUME $(getvolumesize ${BACKUP_IMAGE}/meta)
+    logaction "Restore partition table"
     restorembr /dev/${LVM_GROUP}/${LVM_VOLUME} ${BACKUP_IMAGE}/mbr.lzo ${BACKUP_IMAGE}/table.sf
 }
 
 #restore one partition
 restoreone() {
     local partition_num=$1
-    restorepartition $partition_num $BACKUP_IMAGE
+    local pttype=$(getptinfo ${BACKUP_IMAGE}/meta ${partition_num}|gawk '{print $1}')
+
+    case "$pttype" in
+        "" )
+            logaction "Skip partition${partition_num}"
+            ;;
+        "extended" )
+            logaction "Skip partition${partition_num}"
+            ;;
+        * )
+            logaction "Restore partition${partition_num} data"
+            restorepartition $partition_num $BACKUP_IMAGE
+            ;;
+    esac
 }
 
 #restore all partitions
 restoreall() {
+    logstep "Restore all partitions' data"
     for num in $(cat ${BACKUP_IMAGE}/meta|gawk 'NR>7{print $1}'); do
-        local pttype=$(getptinfo ${BACKUP_IMAGE}/meta ${num}|gawk '{print $1}')
-        if [ "$pttype" != extended ]; then
-            restoreone $num
-        fi
+        restoreone $num
     done
 }
+
+TARGET=/dev/${LVM_GROUP}/${LVM_VOLUME}
 
 case "${ACTION}" in
     #no data restore
@@ -120,23 +148,28 @@ case "${ACTION}" in
 
     #only data
         part)
-            kpartx -av /dev/$LVM_GROUP/$LVM_VOLUME
+            logstep "Maping all partitions"
+            kpartx -av $TARGET
             if [ ${PART_NUM} != 0 ]; then
                 restoreone ${PART_NUM}
             else
                 restoreall
             fi
+            logstep "Unmap all partitions"
             sleep 5
-            kpartx -d /dev/$LVM_GROUP/$LVM_VOLUME
+            kpartx -d $TARGET
             ;;
 
         clone)
             restorevolume
-            kpartx -av /dev/$LVM_GROUP/$LVM_VOLUME
+            logstep "Maping all partitions"
+            kpartx -av $TARGET
             restoreall
+            logstep "Unmap all partitions"
             sleep 5
-            kpartx -d /dev/$LVM_GROUP/$LVM_VOLUME
+            kpartx -d $TARGET
             ;;
+
         *)
             echo "Invalid arguments."
             exit 1
