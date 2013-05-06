@@ -1,0 +1,13 @@
+88fb8249066d5ec7b7cbf770e5638026  usr/bin/trantect-backup
+5b661ff71896e744765422e28a5af45e  usr/bin/trantect-restore
+cfe93965b1f99daf77ba246cd54aaf8d  usr/share/doc/trantect-backup/README.Debian
+943c2e80ab30137c477a9eea15b8b833  usr/share/doc/trantect-backup/changelog.Debian.gz
+008f5ae70683bdfe96ef82eb9906c595  usr/share/doc/trantect-backup/copyright
+fa73507983f0072185a6931eb2781710  usr/share/doc/trantect-backup/requirement.txt
+b1c23eed01afbe9a1fbad2dbaaa18690  usr/share/trantect/backends/ext4.bash
+6a0a5b7cb71ec4fe4bf31c027cfbbae2  usr/share/trantect/backends/ntfs.bash
+e9c03361d713e6b8e3d86f3f3d8d62f2  usr/share/trantect/backup_lvm_volume.sh
+4215f8a684e01e018136ab8ce938b464  usr/share/trantect/log.sh
+30d6881afd21fdaceae42fd466ed72da  usr/share/trantect/mbr.bash
+a5c8746fe980b3f6bfc01570e1543255  usr/share/trantect/meta.bash
+1c3836dede3fa1e563ea523171b5e2d2  usr/share/trantect/restore_lvm_volume.sh

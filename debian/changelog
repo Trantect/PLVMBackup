@@ -1,0 +1,5 @@
+trantect-backup (1.0.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- developer <developer@icm@backupninja.com>  Mon, 06 May 2013 14:46:50 +0800

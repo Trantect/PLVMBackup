@@ -1,0 +1,6 @@
+sed
+gawk
+lzop
+partclone
+ntfsclone
+sfdisk
