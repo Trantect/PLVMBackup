@@ -1,5 +1,5 @@
-trantect-lvm-util (1.0.0-1) unstable; urgency=low
+trantect-lvm-util (1.0.0-1) oneiric; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
- -- developer <developer@icm@backupninja.com>  Mon, 06 May 2013 16:50:34 +0800
+ -- developer <xiaobo.fei@trantect.com>  Mon, 06 May 2013 16:50:34 +0800
