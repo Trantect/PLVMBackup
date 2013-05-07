@@ -75,11 +75,26 @@ backup_parts()
     kpartx -d ${dev}
 }
 
+show_help()
+{
+
+    echo "Usage:"
+    echo "   trantect-backup [options] <device> <backup_path>"
+    echo
+    echo "Parameters:"
+    echo "device                             Target device for backuping"
+    echo "backup_path                        Directory for backup"
+    echo
+    echo "Options:"
+    echo "-s, --size <snapshot_size>         snapshot size to use during the backup process"
+    echo "-h, --help                         Display this help"
+    exit 0
+}
 main()
 {
 
     local snapshot_size=100M
-    local tmp=`getopt -o s: -- "$@"`
+    local tmp=`getopt -o s:h -l help,size: -- "$@"`
 
     if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
@@ -89,7 +104,8 @@ main()
     while [ $# -gt 0 ]
     do
         case "$1" in
-            -s ) snapshot_size="$2"; shift;;
+            -s|--size ) snapshot_size="$2"; shift;;
+            -h|--help) show_help; shift;;
             -- ) shift; break;;
             -* ) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
             *  ) break;;

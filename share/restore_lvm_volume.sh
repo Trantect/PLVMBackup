@@ -18,12 +18,27 @@ source meta.bash
 cd "${ORIGIAL_PATH}"
 
 
-TEMP=`getopt -o l:d:np: -l lvm:,dir:,nodata,part: -- "$@"`
+TEMP=`getopt -o l:d:np:h -l lvm:,dir:,nodata,part:,help -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
+
+show_help() {
+    echo "Usage:"
+    echo "   trantect-restore [options]"
+    echo
+    echo "Required Options:"
+    echo "-l, --lvm <lvm_group>:<lvm_volume> Target device to restore. It will be created if not exist"
+    echo "-d, --dir <dir_path>               Backup's location"
+    echo
+    echo "Extra Options:"
+    echo "-n, --nodata                       Clone the volume without restore parititon data"
+    echo "-p, --part <partition_num>         Just restore the speical partition data. If the partition num is zero, all the partititon data will be restore"
+    echo "-h, --help                         Display this help"
+    exit 0
+}
 
 ACTION="clone"
 while [ $# -gt 0 ]
@@ -33,6 +48,7 @@ do
         -d|--dir ) BACKUP_IMAGE="$2"; shift;;
         -n|--nodata ) ACTION="nodata";;
         -p|--part ) ACTION="part"; PART_NUM=$2; shift;;
+        -h|--help ) show_help; shift;;
         -- ) shift; break;;
         -* ) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
         *  ) break;;
@@ -60,6 +76,7 @@ fi
 
 #checkimage() {
 #}
+
 
 create_volume() {
     local lvm_group=$1

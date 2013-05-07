@@ -1,2 +1,0 @@
-#!/bin/bash
-/usr/share/trantect/restore_lvm_volume.sh "$@"
