@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for trantect-backup
+# preinst script for trantect-lvm-util
 #
 # see: dh_installdeb(1)
 

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+setsection lvm
+getconf group
+getconf volume
+getconf target_dir
+getconf snapshot_size
+
+TIME=$(date +%Y%m%d)
+
+for v in $volume; do
+    local target_dev=/dev/${group}/${v}
+    info "Backup $target_dev"
+
+    #error "123"
+    local target_backup_dir=$target_dir/${TIME}/${v}
+    #mkdir -p $target_backup_dir/${group}
+    mkdir -p ${target_backup_dir}
+    output=`trantect-backup -s ${snapshot_size} /dev/${group}/${v} ${target_backup_dir} 2>&1`
+    if [ $? = 0 ]; then
+        echo "$output" | (while read l; do
+            info "$l"
+        done)
+        info "Successfully finished backing up volume: $target_dev"
+    else
+        echo "$output" | (while read l; do
+            error "$output"
+        done)
+        error "Failed backup up volume: $target_dev"
+    fi
+done
+

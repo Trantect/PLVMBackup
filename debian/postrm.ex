@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for trantect-backup
+# postrm script for trantect-lvm-util
 #
 # see: dh_installdeb(1)
 

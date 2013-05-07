@@ -26,8 +26,8 @@ manpage.1: manpage.sgml
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>developer@icm@backupninja.com</email>">
   <!ENTITY dhusername  "developer">
-  <!ENTITY dhucpackage "<refentrytitle>TRANTECT-BACKUP</refentrytitle>">
-  <!ENTITY dhpackage   "trantect-backup">
+  <!ENTITY dhucpackage "<refentrytitle>TRANTECT-LVM-UTIL</refentrytitle>">
+  <!ENTITY dhpackage   "trantect-lvm-util">
 
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY gnu         "<acronym>GNU</acronym>">

@@ -56,9 +56,9 @@ man(1), man(7), http://www.tldp.org/HOWTO/Man-Page/
   <!ENTITY dhsection   "SECTION">
   <!-- TITLE should be something like "User commands" or similar (see
        http://www.tldp.org/HOWTO/Man-Page/q2.html). -->
-  <!ENTITY dhtitle     "trantect-backup User Manual">
-  <!ENTITY dhucpackage "TRANTECT-BACKUP">
-  <!ENTITY dhpackage   "trantect-backup">
+  <!ENTITY dhtitle     "trantect-lvm-util User Manual">
+  <!ENTITY dhucpackage "TRANTECT-LVM-UTIL">
+  <!ENTITY dhpackage   "trantect-lvm-util">
 ]>
 
 <refentry>

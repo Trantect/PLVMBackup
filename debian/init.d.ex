@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          trantect-backup
+# Provides:          trantect-lvm-util
 # Required-Start:    $network $local_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
@@ -15,9 +15,9 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC=trantect-backup             # Introduce a short description here
-NAME=trantect-backup             # Introduce the short server's name here
-DAEMON=/usr/sbin/trantect-backup # Introduce the server's location here
+DESC=trantect-lvm-util             # Introduce a short description here
+NAME=trantect-lvm-util             # Introduce the short server's name here
+DAEMON=/usr/sbin/trantect-lvm-util # Introduce the server's location here
 DAEMON_ARGS=""             # Arguments to run the daemon with
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
