@@ -9,7 +9,7 @@ _ext4_backup()
 
     local dst_file=${output}.ext4.lzo
     fsck.ext4 -y "${partition}"
-    partclone.ext4 -c -s ${partition} | lzop -c >${output}
+    partclone.ext4 -c -s ${partition} | lzop -c >${dst_file}
 }
 
 _ext4_restore()
