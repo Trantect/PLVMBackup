@@ -8,6 +8,11 @@ getconf snapshot_size
 
 TIME=$(date +%Y%m%d)
 
+if [ ! -d "${target_dir}" ]; then
+    error "The target directory is not exist: ${target_dir}"
+    exit 1
+fi
+
 for v in $volume; do
     local target_dev=/dev/${group}/${v}
     info "Backup $target_dev"
